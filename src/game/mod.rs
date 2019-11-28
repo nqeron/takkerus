@@ -89,6 +89,9 @@ impl Game {
     }
 
     pub fn play(&mut self) -> Result<(), String> {
+        let total_disconnect = false;
+        loop {
+
         // Initialize players
         let (receiver, mut p1_playtak, mut p2_playtak) = {
             let p1 = if let Some(ref mut p1) = self.p1 {
@@ -338,9 +341,18 @@ impl Game {
                         self.send_message(color.flip(), Message::GameOver);
                         self.send_message(color, Message::GameOver);
                     }
+
+                    if string == "Disconnected"{
+                        let total_disconnect = true;
+                    }
                 },
                 _ => (),
             }
+        }
+        if total_disconnect {
+            break;
+        }
+
         }
 
         Ok(())

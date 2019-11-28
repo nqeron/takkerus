@@ -16,7 +16,6 @@
 //
 // Copyright 2016-2017 Chris Foster
 //
-
 use std::io::{self, BufRead, BufReader, Write};
 use std::net::TcpStream;
 use std::str::FromStr;
@@ -322,7 +321,9 @@ pub fn start_game_handler(stream: &Arc<Mutex<TcpStream>>, player: &mut PlayTakPl
                         }
                     },
                     Message::GameOver => {
-                        post_seek(&stream, &Seek{size: 6, color: Some(Color::White), time: 1200, increment: 0});
+                        write_stream(&mut *stream.lock().unwrap(), &[
+                            "quit",
+                        ]).ok();
                     },
                     _ => (),
                 }

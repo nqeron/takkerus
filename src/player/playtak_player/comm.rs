@@ -181,7 +181,17 @@ pub fn initialize_game(stream: &Arc<Mutex<TcpStream>>, message_queue: &MessageQu
                                     post_seek(stream, seek);
                                 }
                             }
-                        } else if command == "color" {
+                        } else if command == "increment"{
+                            if let Ok(new_inc) = u32::from_str(&value){
+                                    seek.increment = new_inc;
+                                    post_seek(stream, seek);
+                            }
+                        }else if command == "time" {
+                            if let Ok(new_time) = u32::from_str(&value){
+                                seek.time  = new_time;
+                                post_seek(stream, seek);
+                            }
+                        }else if command == "color" {
                             let color = if value == "white" {
                                 Some(Color::White)
                             } else if value == "black" {
@@ -312,9 +322,7 @@ pub fn start_game_handler(stream: &Arc<Mutex<TcpStream>>, player: &mut PlayTakPl
                         }
                     },
                     Message::GameOver => {
-                        write_stream(&mut *stream.lock().unwrap(), &[
-                            "quit",
-                        ]).ok();
+                        post_seek(&stream, &Seek{size: 6, color: Some(Color::White), time: 1200, increment: 0});
                     },
                     _ => (),
                 }

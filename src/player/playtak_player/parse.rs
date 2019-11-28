@@ -217,7 +217,7 @@ pub fn shout(message: &str, username: &String) -> Option<(String, String, String
         let command = {
             let raw = captures[3].to_lowercase();
 
-            if raw == "size" || raw == "color" {
+            if raw == "size" || raw == "color" || raw == "increment" || raw == "time" {
                 raw
             } else if raw == "evaluate" || raw == "evaluation" || raw == "eval" {
                 String::from("evaluate")

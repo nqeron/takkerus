@@ -55,7 +55,7 @@ impl PvSearchPlayer {
 }
 
 impl Player for PvSearchPlayer {
-    fn initialize(&mut self, to_game: Sender<(Color, Message)>, opponent: &Player) -> Result<Sender<Message>, String> {
+    fn initialize(&mut self, to_game: Sender<(Color, Message)>, opponent: &dyn Player) -> Result<Sender<Message>, String> {
         let pvsearch = self.pvsearch.clone();
         let (sender, receiver) = mpsc::channel();
         let vs_playtak = opponent.as_any().is::<PlayTakPlayer>();
@@ -111,6 +111,10 @@ impl Player for PvSearchPlayer {
 
                         break;
                     },
+                    Message::UndoRequest => {
+                        // let mut interrupt = interrupt.lock().unwrap();
+                        to_game.send((color.unwrap(), Message::UndoAccept)).ok();
+                    },
                     _ => (),
                 }
             }
@@ -136,7 +140,7 @@ impl Player for PvSearchPlayer {
         )
     }
 
-    fn as_any(&self) -> &Any {
+    fn as_any(&self) -> &dyn Any {
         self
     }
 }
